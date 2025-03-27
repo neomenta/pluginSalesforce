@@ -1,0 +1,59 @@
+plugins {
+  id 'java'
+}
+
+group = 'neome.plugin.salesforce'
+version = ''
+
+java {
+  sourceCompatibility = JavaVersion.VERSION_17
+  targetCompatibility = JavaVersion.VERSION_17
+}
+
+repositories {
+  mavenCentral()
+  ivy {
+    url "https://web.neome.ai/static/download"
+    patternLayout {
+      artifact("[artifact].[ext]")
+    }
+    metadataSources {
+      artifact()  // Resolve artifacts directly, ignoring ivy.xml metadata
+    }
+  }
+}
+
+jar {
+  zip64 true
+  manifest {
+    attributes(
+      'Class-Path': '.',
+      'Manifest-Version': '1.0'
+    )
+  }
+  from sourceSets.main.output
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+  from { (configurations.runtimeClasspath).collect { it.isDirectory() ? it : zipTree(it) } } {
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
+  }
+}
+
+dependencies {
+  compileOnly 'agent:agent:1.0@jar'
+  testImplementation 'agent:agent:1.0@jar'
+
+  implementation 'com.google.code.gson:gson:2.10.1'
+  implementation("org.bouncycastle:bcprov-jdk18on:1.73")
+  implementation 'com.nimbusds:nimbus-jose-jwt:9.36'
+
+  implementation(files("libs/partner.jar"))
+  implementation(files("libs/force-wsc-63.0.0.jar"))
+  implementation(files("libs/force-wsc-63.0.0-sources.jar"))
+
+  testImplementation platform('org.junit:junit-bom:5.9.1')
+  testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+test {
+  useJUnitPlatform()
+}
