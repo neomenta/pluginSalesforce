@@ -1,0 +1,463 @@
+//*******************
+// Salesforce plugin
+//*******************
+
+//****************************************************************************
+// Run the first command to create the plugin from main NeoScript screen
+// Run the consecutive commands from plugin's NeoScript screen
+//****************************************************************************
+
+create plugin "Salesforce Plugin"
+  about: "Salesforce Official Plugin - V2"
+
+//** var
+ensure var SalesforcePluginPackageName kind: text
+  deploy: fixedOnDeploy
+  value: "neome.plugin.salesforce"
+
+ensure var DummySetOfText kind: setOfText
+  deploy: fixedOnDeploy
+  value: "<root>
+      <node key='keyNotStarted'>Not Started</node>
+    </root>"
+
+//** form, SalesforceConfig
+ensure form SalesforceConfig
+  permissionMatrix: {
+      'defaultPermission': 'write'
+    }
+ensure section: Details
+  permissionMatrix: {
+      'defaultPermission': 'write'
+    }
+ensure field Domain kind: text
+  permissionMatrix: {
+      'defaultPermission': 'write'
+    }
+ensure field ClientId kind: text
+  permissionMatrix: {
+      'defaultPermission': 'write'
+    }
+ensure field PrivateKey kind: document
+ensure field UsernameVariableName kind: text
+
+//** form, AccountList
+ensure form AccountList
+  permissionMatrix: {
+      'defaultPermission': 'write'
+    }
+ensure grid: Account
+ensure field Id kind: text
+ensure field Name kind: text
+ensure field AccountSite kind: text
+ensure field AccountNumber kind: text
+ensure field Phone kind: mobileNumber
+ensure field BillingState kind: text
+ensure field Type kind: pickText sourceVar: DummySetOfText
+ensure field Industry kind: pickText sourceVar: DummySetOfText
+ensure field Owner kind: pickText sourceVar: DummySetOfText
+
+//** form, CreateAccount
+ensure form CreateAccount
+  permissionMatrix: {
+      'defaultPermission': 'write'
+    }
+ensure section: Details
+ensure field Id kind: text
+ensure field Name kind: text
+ensure field AccountSite kind: text
+ensure field AccountNumber kind: text
+ensure field Phone kind: mobileNumber
+ensure field BillingState kind: text
+ensure field Type kind: pickText sourceVar: DummySetOfText
+ensure field Industry kind: pickText sourceVar: DummySetOfText
+ensure field Owner kind: pickText sourceVar: DummySetOfText
+
+//** form, CreatedRecordId
+ensure form CreatedRecordId
+  permissionMatrix: {
+      'defaultPermission': 'write'
+    }
+
+// composite, section, Details
+ensure section: Details
+ensure field Id kind: text
+
+//** form, OpportunityList
+ensure form OpportunityList
+  permissionMatrix: {
+      'defaultPermission': 'write'
+    }
+ensure grid: Opportunity
+ensure field Id kind: text
+ensure field Name kind: text
+ensure field Amount kind: decimal
+ensure field Description kind: text
+ensure field CloseDate kind: date
+ensure field Owner kind: pickText sourceVar: DummySetOfText
+ensure field Stage kind: pickText sourceVar: DummySetOfText
+
+//** form, OpportunityInput
+ensure form OpportunityInput
+  permissionMatrix: {
+      'defaultPermission': 'write'
+    }
+ensure section: Details
+ensure field Offset kind: number
+ensure field Limit kind: number
+ensure field Opportunity kind: pickText sourceVar: DummySetOfText
+
+//** form, TaskList
+ensure form TaskList
+  permissionMatrix: {
+      'defaultPermission': 'write'
+    }
+ensure grid: Task
+ensure field Id kind: text
+ensure field Subject kind: text
+ensure field DueDate kind: date
+ensure field Status kind: pickText sourceVar: DummySetOfText
+ensure field Priority kind: pickText sourceVar: DummySetOfText
+ensure field AssignedTo kind: pickText sourceVar: DummySetOfText
+ensure field RelatedTo kind: pickText sourceVar: DummySetOfText
+ensure field Description kind: text
+
+//** form, EventList
+ensure form EventList
+  permissionMatrix: {
+      'defaultPermission': 'write'
+    }
+ensure grid: Event
+ensure field Id kind: text
+ensure field Subject kind: text
+ensure field Description kind: text
+ensure field StartDate kind: date
+ensure field EndDate kind: date
+ensure field Location kind: text
+ensure field IsAllDayEvent kind: bool
+ensure field AssignedTo kind: pickText sourceVar: DummySetOfText
+ensure field RelatedTo kind: pickText sourceVar: DummySetOfText
+
+//** form, CreateTask
+ensure form CreateTask
+  permissionMatrix: {
+      'defaultPermission': 'write'
+    }
+ensure section: Details
+ensure field Id kind: text
+ensure field Subject kind: text required: true
+ensure field Description kind: paragraph
+ensure field DueDate kind: date
+ensure field Status kind: pickText sourceVar: DummySetOfText
+ensure field Priority kind: pickText sourceVar: DummySetOfText
+ensure field AssignedTo kind: pickText sourceVar: DummySetOfText
+ensure field RelatedTo kind: pickText sourceVar: DummySetOfText
+
+//** form, CreateEvent
+ensure form CreateEvent
+  permissionMatrix: {
+      'defaultPermission': 'write'
+    }
+ensure section: Details
+ensure field Id kind: text
+ensure field Subject kind: text required: true
+ensure field Description kind: paragraph
+ensure field StartDate kind: date
+ensure field EndDate kind: date
+ensure field Location kind: text
+ensure field IsAllDayEvent kind: bool
+ensure field AssignedTo kind: pickText sourceVar: DummySetOfText
+ensure field RelatedTo kind: pickText sourceVar: DummySetOfText
+
+//** form, DropObjectDownPicklistInput
+ensure form DropObjectDownPicklistInput
+ensure section: Details
+ensure field ObjectType kind: text
+ensure field DropdownFieldName kind: text
+
+//** form, CreateOpportunity
+ensure form CreateOpportunity
+ensure section: Details
+ensure field Id kind: text
+ensure field OpportunityName kind: text
+ensure field AccountName kind: pickText sourceVar: DummySetOfText
+ensure field Type kind: pickText sourceVar: DummySetOfText
+ensure field LeadSource kind: pickText sourceVar: DummySetOfText
+ensure field CloseDate kind: date
+ensure field Stage kind: pickText sourceVar: DummySetOfText
+ensure field OrderNumber kind: text
+ensure field CurrentGenerator kind: text
+ensure field TrackingNumber kind: text
+ensure field MainCompetitors kind: text
+ensure field DeliveryInstallationStatus kind: pickText sourceVar: DummySetOfText
+ensure field Description kind: text
+ensure field Probability kind: decimal
+ensure field Amount kind: decimal
+
+//** form, RecordIdInputForm
+ensure form RecordIdInputForm
+ensure section: Details
+ensure field Id kind: text required: true
+
+//** form, OpportunityDetail
+ensure form OpportunityDetail
+ensure section: Details
+ensure field Id kind: text
+ensure field OpportunityName kind: text
+ensure field AccountName kind: pickText sourceVar: DummySetOfText
+ensure field CloseDate kind: dateTime
+ensure field Type kind: pickText sourceVar: DummySetOfText
+ensure field LeadSource kind: pickText sourceVar: DummySetOfText
+ensure field Stage kind: pickText sourceVar: DummySetOfText
+ensure field Probability kind: decimal
+ensure field OrderNumber kind: text
+ensure field CurrentGenerator kind: text
+ensure field TrackingNumber kind: text
+ensure field DeliveryInstallationStatus kind: pickText sourceVar: DummySetOfText
+ensure field Description kind: text
+ensure field Amount kind: decimal
+ensure field MainCompetitors kind: text
+
+//** form, TaskDetail
+ensure form TaskDetail
+ensure section: Details
+ensure field Id kind: text
+ensure field Subject kind: text
+ensure field DueDate kind: date
+ensure field Status kind: pickText sourceVar: DummySetOfText
+ensure field Priority kind: pickText sourceVar: DummySetOfText
+ensure field RelatedTo kind: pickText sourceVar: DummySetOfText
+ensure field AssignedTo kind: pickText sourceVar: DummySetOfText
+ensure field Description kind: paragraph
+
+//** form, EventDetail
+ensure form EventDetail
+ensure section: Details
+ensure field Id kind: text
+  permissionMatrix: {
+      'defaultPermission': 'invisible'
+    }
+ensure field Subject kind: text required: true
+ensure field Description kind: paragraph
+ensure field StartDateTime kind: dateTime
+ensure field EndDateTime kind: dateTime defaultValue: "tomorrow"
+ensure field IsAllDayEvent kind: bool
+ensure field Location kind: text
+ensure field AssignedTo kind: pickText sourceVar: DummySetOfText
+ensure field RelatedTo kind: pickText sourceVar: DummySetOfText
+
+//** form, AccountDetail
+ensure form AccountDetail
+ensure section: Details
+ensure field Id kind: text
+ensure field Name kind: text
+ensure field AccountSite kind: text
+ensure field AccountNumber kind: text
+ensure field Phone kind: mobileNumber
+ensure field Type kind: pickText sourceVar: DummySetOfText
+ensure field Industry kind: pickText sourceVar: DummySetOfText
+ensure field BillingState kind: text
+ensure field Owner kind: pickText sourceVar: DummySetOfText
+
+//** form, SyncDetailInputForm
+ensure form SyncDetailInputForm
+ensure section: Details
+ensure field Id kind: text required: true
+ensure field ObjectType kind: text required: true
+
+//** form, SalesforceRecordNotFound
+ensure form SalesforceRecordNotFound
+ensure section: Details
+ensure field ObjectType kind: text required: true
+ensure field ObjectId kind: text required: true
+
+//** api, CreateAccount
+ensure api CreateAccount
+  apiType: post
+  inputForm: CreateAccount
+  outputForm: CreatedRecordId
+  creationDate: "25/03/2025, 12:00:00 AM"
+
+//** api, CreateOpportunity
+ensure api CreateOpportunity
+  apiType: post
+  inputForm: CreateOpportunity
+  outputForm: CreatedRecordId
+  guaranteedInvocation: true
+  creationDate: "25/03/2025, 12:00:00 AM"
+
+//** api, CreateTask
+ensure api CreateTask
+  apiType: post
+  inputForm: CreateTask
+  outputForm: CreatedRecordId
+  guaranteedInvocation: true
+  creationDate: "25/03/2025, 12:00:00 AM"
+
+//** api, CreateEvent
+ensure api CreateEvent
+  apiType: post
+  inputForm: CreateEvent
+  outputForm: CreatedRecordId
+  guaranteedInvocation: true
+  creationDate: "25/03/2025, 12:00:00 AM"
+
+//** api, UpdateAccount
+ensure api UpdateAccount
+  apiType: post
+  inputForm: CreateAccount
+  outputForm: AccountDetail
+  guaranteedInvocation: true
+  creationDate: "25/03/2025, 12:00:00 AM"
+
+//** api, UpdateOpportunity
+ensure api UpdateOpportunity
+  apiType: patch
+  inputForm: CreateOpportunity
+  guaranteedInvocation: true
+  creationDate: "25/03/2025, 12:00:00 AM"
+
+//** api, UpdateTask
+ensure api UpdateTask apiType: post
+  creationDate: "25/03/2025, 12:00:00 AM"
+  inputForm: CreateTask
+  guaranteedInvocation: true
+
+//** api, UpdateEvent
+ensure api UpdateEvent
+  apiType: post
+  inputForm: CreateEvent
+  outputForm: AccountDetail
+  guaranteedInvocation: true
+  creationDate: "25/03/2025, 12:00:00 AM"
+
+//** api, GetAccounts
+ensure api GetAccounts apiType: get
+  outputForm: AccountList
+  creationDate: "25/03/2025, 12:00:00 AM"
+
+//** api, GetOpportunityByAccount
+ensure api GetOpportunityByAccount
+  apiType: get
+  inputForm: RecordIdInputForm
+  outputForm: OpportunityList
+  creationDate: "25/03/2025, 12:00:00 AM"
+
+//** api, GetAccountsDropdownList
+ensure api GetAccountsDropdownList apiType: get
+  outputForm: $FormMapOfOptions
+  creationDate: "25/03/2025, 12:00:00 AM"
+
+//** api, GetUsers
+ensure api GetUsers apiType: get
+  outputForm: $FormMapOfOptions
+  creationDate: "25/03/2025, 12:00:00 AM"
+
+//** api, GetOpportunitiesDropdownList
+ensure api GetOpportunitiesDropdownList apiType: get
+  outputForm: $FormMapOfOptions
+  creationDate: "25/03/2025, 12:00:00 AM"
+
+//** api, GetTasksByOpportunity
+ensure api GetTasksByOpportunity
+  apiType: get
+  inputForm: RecordIdInputForm
+  outputForm: TaskList
+  creationDate: "25/03/2025, 12:00:00 AM"
+
+//** api, GetEventsByOpportunity
+ensure api GetEventsByOpportunity
+  apiType: get
+  inputForm: RecordIdInputForm
+  outputForm: EventList
+  creationDate: "25/03/2025, 12:00:00 AM"
+
+//** api, GetObjectDropDownPickList
+ensure api GetObjectDropDownPickList
+  apiType: get
+  inputForm: DropObjectDownPicklistInput
+  outputForm: $FormMapOfOptions
+  creationDate: "25/03/2025, 12:00:00 AM"
+
+//** api, RemoveRecord
+ensure api RemoveRecord
+  apiType: delete
+  inputForm: RecordIdInputForm
+  guaranteedInvocation: true
+  creationDate: "25/03/2025, 12:00:00 AM"
+
+//** api, GetOpportunityDetails
+ensure api GetOpportunityDetails
+  apiType: get
+  inputForm: RecordIdInputForm
+  outputForm: OpportunityDetail
+  creationDate: "25/03/2025, 12:00:00 AM"
+
+//** api, GetTaskDetails
+ensure api GetTaskDetails
+  apiType: get
+  inputForm: RecordIdInputForm
+  outputForm: TaskDetail
+  creationDate: "25/03/2025, 12:00:00 AM"
+
+//** api, GetEventDetails
+ensure api GetEventDetails
+  apiType: get
+  inputForm: RecordIdInputForm
+  outputForm: EventDetail
+  creationDate: "25/03/2025, 12:00:00 AM"
+
+//** api, GetAccountDetails
+ensure api GetAccountDetails
+  apiType: get
+  inputForm: RecordIdInputForm
+  outputForm: AccountDetail
+  creationDate: "25/03/2025, 12:00:00 AM"
+
+//** api, AccountDetailWebhook
+ensure api AccountDetailWebhook apiType: webhook
+  outputForm: AccountDetail
+  creationDate: "25/03/2025, 12:00:00 AM"
+
+//** api, TaskDetailWebhook
+ensure api TaskDetailWebhook apiType: webhook
+  outputForm: TaskDetail
+  creationDate: "25/03/2025, 12:00:00 AM"
+
+//** api, OpportunityDetailWebhook
+ensure api OpportunityDetailWebhook apiType: webhook
+  outputForm: OpportunityDetail
+  creationDate: "25/03/2025, 12:00:00 AM"
+
+//** api, EventDetailWebhook
+ensure api EventDetailWebhook apiType: webhook
+  outputForm: EventDetail
+  creationDate: "25/03/2025, 12:00:00 AM"
+
+//** api, SyncDetail
+ensure api SyncDetail apiType: post
+  inputForm: SyncDetailInputForm
+  creationDate: "25/03/2025, 12:00:00 AM"
+
+//** api, SalesforceRecordNotFound
+ensure api SalesforceRecordNotFound
+  apiType: webhook
+  outputForm: SalesforceRecordNotFound
+  creationDate: "25/03/2025, 12:00:00 AM"
+
+//************************************
+// resource map and plugin version
+// jar: Upload the jar file manually
+//************************************
+ensure root
+  resourceMap: {
+      'dev': {
+        'pluginConfigForm': 'SalesforceConfig',
+        'packageNameVar': 'SalesforcePluginPackageName'
+      },
+      'jar': {
+        'pluginConfigForm': 'SalesforceConfig',
+        'packageNameVar': 'SalesforcePluginPackageName'
+      }
+    }
+  pluginVersion: "Version 1.0.0"
